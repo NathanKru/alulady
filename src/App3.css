@@ -204,6 +204,67 @@ img {
   background-color: var(--light-color);
 }
 
+.custom h2, .custom h3, .custom h4, .custom h5 {
+  color: #f277c6;
+}
+
+.custom p, .custom li {
+  color: #000;
+}
+
+/* New Benefits List Styles */
+.benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.benefit-item {
+  background-color: var(--white);
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.benefit-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.benefit-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.benefit-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.benefit-icon-white {
+  filter: brightness(0) invert(1);
+}
+
+.benefit-header h5 {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.benefit-item p {
+  margin: 0;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* Old styles - keeping for reference but not used */
 .benefits-list li {
   margin-bottom: 15px;
   display: flex;
@@ -242,12 +303,11 @@ img {
 .process-section h2 {
   font-size: 2.5rem;
   margin-bottom: 3rem;
+  color: var(--white);
 }
 
 .process-steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 30px;
+  display: block;
   margin-top: 50px;
 }
 
@@ -279,6 +339,26 @@ img {
   justify-content: center;
   font-weight: bold;
   font-size: 1.5rem;
+}
+
+/* Add for process step icons */
+.step-icon {
+  width: 60px;
+  height: 60px;
+  background-color: var(--secondary-color); /* pink */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.step-icon img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
 }
 
 /* Contact Section */
@@ -637,14 +717,92 @@ img {
 @media (max-width: 576px) {
   .main-nav .container {
     flex-direction: column;
-    gap: 15px;
-  }
-  
-  .nav-links {
     gap: 10px;
+    align-items: center;
+  }
+  .nav-links {
+    flex-direction: row !important;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+  }
+  .logo-placeholder {
+    margin-bottom: 0;
   }
 }
 
 .modal-content{
   width: 60% !important;
+}
+
+.installation-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.installation-step {
+  background-color: var(--white);
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.installation-step:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.installation-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.installation-header h5 {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.installation-step p {
+  margin: 0;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.tailored-business-types {
+  background-color: #111;
+  color: #fff;
+  padding: 32px 24px;
+  border-radius: 16px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.process-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .process-row {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .process-row .step {
+    flex: 1 1 0;
+    min-width: 0;
+  }
 }
