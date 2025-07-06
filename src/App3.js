@@ -532,7 +532,7 @@ const App3 = () => {
               <div className="step">
                 <div className="step-icon" style={{ background: '#ffffff', borderRadius: '50%' }}>
                   <img
-                    src={`${process.env.PUBLIC_URL}/Icons/window.png`}
+                    src={`${process.env.PUBLIC_URL}/Icons/Window.png`}
                     alt="Preparation & Removal"
                     className="process-icon"
                   />
@@ -547,7 +547,7 @@ const App3 = () => {
               <div className="step">
                 <div className="step-icon" style={{ background: '#ffffff', borderRadius: '50%' }}>
                   <img
-                    src={`${process.env.PUBLIC_URL}/Icons/steeltoaluminium.png`}
+                    src={`${process.env.PUBLIC_URL}/Icons/Steeltoaluminium.png`}
                     alt="Conversion & Installation"
                     className="process-icon"
                   />
