@@ -1,12 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App3.css';
 import { FaExchangeAlt, FaDoorOpen, FaPalette, FaTools, FaPhone, FaMapMarkerAlt, FaEnvelope, FaFacebook, FaWhatsapp, FaTimes, FaShieldAlt, FaLeaf, FaCog, FaStar, FaDollarSign } from 'react-icons/fa';
+import emailjs from 'emailjs-com';
 
 const App3 = () => {
   const [showModal, setShowModal] = useState(false);
+  const [showMoreContent, setShowMoreContent] = useState(false);
+  const [modalType, setModalType] = useState('quote'); // 'quote' or 'maintenance'
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    service: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
 
-  const toggleModal = () => {
+  // Initialize EmailJS
+  useEffect(() => {
+    emailjs.init("YOUR_EMAILJS_USER_ID"); // Replace with your actual EmailJS user ID
+  }, []);
+
+  const toggleModal = (type = 'quote') => {
+    setModalType(type);
     setShowModal(!showModal);
+    if (!showModal) {
+      // Reset form when opening modal
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        service: '',
+        message: ''
+      });
+      setSubmitStatus(null);
+    }
+  };
+
+  const toggleMoreContent = () => {
+    setShowMoreContent(!showMoreContent);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const templateParams = {
+        to_name: 'Alu Lady Team',
+        from_name: formData.name,
+        from_email: formData.email,
+        phone_number: formData.phone,
+        service_type: formData.service,
+        message: formData.message,
+        request_type: modalType === 'maintenance' ? 'Maintenance Request' : 'Quote Request'
+      };
+
+      await emailjs.send(
+        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
+        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+        templateParams
+      );
+
+      setSubmitStatus('success');
+      // Reset form after successful submission
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        service: '',
+        message: ''
+      });
+      
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        setShowModal(false);
+        setSubmitStatus(null);
+      }, 2000);
+
+    } catch (error) {
+      console.error('Email submission failed:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   return (
     <div className="app">
@@ -15,9 +102,9 @@ const App3 = () => {
         <div className="container">
           <div className="social-icons">
             <a href="#" aria-label="Facebook"><FaFacebook /></a>
-            <a href="#" aria-label="Whatsapp"><FaWhatsapp /></a>
+            <a href="https://wa.me/27710249222" target="_blank" rel="noopener noreferrer" aria-label="Whatsapp"><FaWhatsapp /></a>
           </div>
-          <button className="quote-button" onClick={toggleModal}>
+          <button className="quote-button" onClick={() => toggleModal('quote')}>
             Get a Quote
           </button>
         </div>
@@ -27,10 +114,17 @@ const App3 = () => {
       <nav className="main-nav">
         <div className="container">
           <div className="logo-placeholder">
-            <img 
-              src={`${process.env.PUBLIC_URL}/logo.png`} 
+            <img
+              src={`${process.env.PUBLIC_URL}/logo.png`}
               alt="Alu Lady "
-              className="logo-image"
+              className="logo-image alu-lady-logo"
+            />
+          </div>
+          <div className="logo-placeholder">
+            <img
+              src={`${process.env.PUBLIC_URL}/AAAMSALogo-small.png`}
+              alt="AAAMSA "
+              className="logo-image aaamsa-logo"
             />
           </div>
           <ul className="nav-links">
@@ -43,35 +137,42 @@ const App3 = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="modal-overlay" onClick={toggleModal}>
+        <div className="modal-overlay" onClick={() => toggleModal()}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-modal" onClick={toggleModal}>
+            <button className="close-modal" onClick={() => toggleModal()}>
               <FaTimes />
             </button>
-            <h3>Get a Quote</h3>
-            <form className="quote-form">
-              <input type="text" placeholder="Your Name" required />
-              <input type="email" placeholder="Your Email" required />
-              <input type="tel" placeholder="Phone Number" required />
-              <select required>
+            <h3>{modalType === 'quote' ? 'Get a Quote' : 'Schedule Maintenance'}</h3>
+            <form className="quote-form" onSubmit={handleSubmit}>
+              <input type="text" name="name" placeholder="Your Name" required value={formData.name} onChange={handleInputChange} />
+              <input type="email" name="email" placeholder="Your Email" required value={formData.email} onChange={handleInputChange} />
+              <input type="tel" name="phone" placeholder="Phone Number" required value={formData.phone} onChange={handleInputChange} />
+              <select name="service" required value={formData.service} onChange={handleInputChange}>
                 <option value="">Select Service</option>
-                <option value="conversion">Window Conversion</option>
-                <option value="maintenance">Door Maintenance</option>
-                <option value="custom">Custom Designs</option>
+                <option value="conversion">Custom and Standard Aluminium Window & door designs </option>
+                <option value="maintenance">Aluminium Shopfront Design & Installation Services </option>
+                <option value="custom">Steel to Aluminium Window Conversion Services</option>
+                <option value="custom">Frameless Shower Doors & Aluminium Balustrade Design & Installation</option>
+                <option value="custom">Sliding and Stacking Aluminium Door Maintenance Services</option>
+                <option value="custom">Maintenance Services</option>
               </select>
-              <textarea placeholder="Project Details" required></textarea>
-              <button type="submit" className="submit-button">Submit Request</button>
+              <textarea name="message" placeholder="Project Details" required value={formData.message} onChange={handleInputChange}></textarea>
+              <button type="submit" className="submit-button" disabled={isSubmitting}>
+                {isSubmitting ? 'Submitting...' : 'Submit Request'}
+              </button>
+              {submitStatus === 'success' && <p className="submit-status success">Thank you for your request! We will get back to you shortly.</p>}
+              {submitStatus === 'error' && <p className="submit-status error">Failed to submit request. Please try again later.</p>}
             </form>
           </div>
         </div>
       )}
       {/* Hero Section */}
-      <header className="hero"  id="home">
+      <header className="hero" id="home">
         <div className="hero-content">
           <h1>Elevate Your Space with Aluminium Elegance</h1>
-          <p>Where innovation meets elegance in aluminium solutions</p>
-          <button className="cta-button mx-3">Contact us</button>
-          <button className="cta-button mx-3">Get a Quote</button>
+          <p class="white-text">Where innovation meets elegance in aluminium solutions</p>
+          <button className="cta-button mx-3" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}>Contact us</button>
+          <button className="cta-button mx-3" onClick={() => toggleModal('quote')}>Get a Quote</button>
         </div>
       </header>
 
@@ -79,49 +180,67 @@ const App3 = () => {
       <section className="about-section">
         <div className="container">
           <h2>About Alu Lady</h2>
-          <p>Alu Lady is committed to empowering women and elevating home aesthetics. We specialize in high-quality aluminum products and offer comprehensive solutions including doors, windows, and commercial shopfronts.</p>
-          <div className="features-grid">
-            <div className="feature">
-              <div className="icon-circle">
-                <FaExchangeAlt />
+          <p>Alu Lady is committed to empowering women and elevating home aesthetics. We specialize in high-quality aluminum
+             products and offer comprehensive solutions
+            including doors, windows, and commercial shopfronts. We are proudly AAMSA-registered, ensuring our work meets the 
+            highest industry standards.</p>
+          
+          {/* Certifications and Memberships */}
+          <div className="certifications">
+            <div className="certification-logos">
+              <div className="certification-logo">
+                <img
+                  src={`${process.env.PUBLIC_URL}/AAAMSALogo-small.png`}
+                  alt="AAAMSA Certified"
+                  className="cert-logo"
+                />
               </div>
-              <h3>Steel to Aluminium Conversion</h3>
-              <p>Modernize your property with durable, stylish aluminium windows.</p>
+              <div className="certification-logo">
+                <img
+                  src={`${process.env.PUBLIC_URL}/sagga.jpg`}
+                  alt="SAGGA Member"
+                  className="cert-logo"
+                />
+              </div>
             </div>
+          </div>
+
+          <div className="features-grid">
             <div className="feature">
               <div className="icon-circle">
                 <FaDoorOpen />
               </div>
-              <h3>1. Custom and Standard Aluminium Window and Door</h3>
+              <h3>Custom and Standard Aluminium Window and Door designs</h3>
               <p>Expertly crafted aluminium windows and doors, both custom and standard, to suit your needs.</p>
             </div>
             <div className="feature">
               <div className="icon-circle">
                 <FaPalette />
               </div>
-              <h3>2. Custom Designs</h3>
-              <p>Bespoke aluminium solutions tailored to your vision.</p>
+              <h3>Aluminium Shopfront Design & Installation Services</h3>
+              <p>Bespoke aluminium solutions tailored to your vision.
+                Expert team that specializes in designing and installing high-quality aluminium shopfronts</p>
             </div>
             <div className="feature">
               <div className="icon-circle">
                 {/* Placeholder for shower/balustrade icon */}
                 <FaStar />
               </div>
-              <h3>3. Frameless Shower Doors &amp; Aluminium Balustrade Design &amp; Installation</h3>
+              <h3>Steel to Aluminium Window Conversion Services</h3>
               <p>Elegant frameless shower doors and modern aluminium balustrades, designed and installed to perfection.</p>
             </div>
             <div className="feature">
               <div className="icon-circle">
                 <FaTools />
               </div>
-              <h3>4. Sliding and Stacking Aluminium Door Maintenance Services</h3>
+              <h3>Frameless Shower Doors & Aluminium Balustrade Design & Installation</h3>
               <p>Keep your sliding and stacking doors in perfect condition with our expert maintenance services.</p>
             </div>
             <div className="feature">
               <div className="icon-circle">
                 <FaCog />
               </div>
-              <h3>5. Professional Installation Services</h3>
+              <h3>Sliding and Stacking Aluminium Door Maintenance Services</h3>
               <p>Seamless and professional installation for all aluminium products, ensuring quality and durability.</p>
             </div>
           </div>
@@ -132,13 +251,12 @@ const App3 = () => {
       <section className="service-section conversion">
         <div className="container" id="services">
           <div className="service-content">
-            <h2>1.Custom and Standard Aluminium Window and
-                Door</h2>
-                <p> At Alu Lady, we specialize in creating bespoke aluminium window and door designs that
-                perfectly complement your home or business. Our custom designs are not only
-                AESTHETICALLY PLEASING but also offer superior DURABILITY AND ENERGY
-                EFFICIENCY. Whether you&#39;re looking for sleek, modern lines or a more traditional look, our
-                team of expert designers will work with you to BRING YOUR VISION TO LIFE.</p>
+            <h2>Custom and Standard Aluminium Window and Door designs</h2>
+            <p> At Alu Lady, we specialize in creating bespoke aluminium window and door designs that
+              perfectly complement your home or business. Our custom designs are not only
+              AESTHETICALLY PLEASING but also offer superior DURABILITY AND ENERGY
+              EFFICIENCY. Whether you&#39;re looking for sleek, modern lines or a more traditional look, our
+              team of expert designers will work with you to BRING YOUR VISION TO LIFE.</p>
 
             <h4>Why choose aluminium?</h4>
             <p>Aluminium is a VERSATILE AND SUSTAINABLE material that offers numerous benefits:</p>
@@ -183,7 +301,7 @@ const App3 = () => {
       <section className="service-section maintenance">
         <div className="container">
           <div className="service-image">
-          <img src={`${process.env.PUBLIC_URL}/b2.jpg`} alt="Alu Lady Example" className="service-img" />
+            <img src={`${process.env.PUBLIC_URL}/b2.jpg`} alt="Alu Lady Example" className="service-img" />
           </div>
           <div className="service-content">
             <h2>Professional Installation Services</h2>
@@ -230,66 +348,69 @@ const App3 = () => {
         </div>
       </section>
 
-      <section className="service-section shopfront">
-        <div className="container">
-          <div className="service-image">
-            <img src={`${process.env.PUBLIC_URL}/bg1.jpg`} alt="Aluminium Shopfront Example" className="service-img" />
-          </div>
+      <section className="service-section conversion">
+        <div className="container" id="services">
           <div className="service-content">
             <h2>Aluminium Shopfront Design & Installation Services</h2>
-            <p>
-              <b>Make a Powerful First Impression</b><br />
-              Your shopfront is the face of your business — it's the first thing customers see, and the last thing they remember. At Alu Lady, our expert team specializes in designing and installing high-quality aluminium shopfronts that not only elevate your curb appeal but also provide <b>DURABILITY, SECURITY, AND ENERGY EFFICIENCY</b>.
-            </p>
-            <h4>Why Choose Aluminium?</h4>
-            <p>
-              Aluminium is the ideal choice for modern businesses looking for a <b>SLEEK, PROFESSIONAL, AND LOW-MAINTENANCE</b> solution. It's strong, lightweight, and naturally resistant to corrosion — making it perfect for high-traffic retail and commercial environments.
-            </p>
-            <div className="design-features">
-              <div className="design-feature">
-                <div className="design-feature-header">
-                  <img src={`${process.env.PUBLIC_URL}/Icons/modernaesthetic.png`} alt="Modern Appearance" className="benefit-icon benefit-icon-white" />
-                  <h4>Modern Appearance</h4>
+            <p> <b>Make a Powerful First Impression</b><br />
+                  Your shopfront is the face of your business — it's the first thing customers see, and the last thing they remember.
+                  At Alu Lady, our expert team specializes in designing and installing high-quality aluminium shopfronts that not only elevate your curb appeal 
+                  but also provide <b>DURABILITY, SECURITY, AND ENERGY EFFICIENCY</b>.</p>
+              <h4>Why Choose Aluminium?</h4>
+              <p>
+                  Aluminium is the ideal choice for modern businesses looking for a <b>SLEEK, PROFESSIONAL, AND LOW-MAINTENANCE</b> solution. It's strong, lightweight,
+                  and naturally resistant to corrosion — making it perfect for high-traffic retail and commercial environments.
+              </p>
+            <div className="benefits-list">
+              <div className="benefit-item">
+                <div className="benefit-header">
+                  <img src={`${process.env.PUBLIC_URL}/Icons/modernaesthetic.png`} alt="modern aesthetic" className="benefit-icon" />
+                  <h5>Modern Appearance</h5>
                 </div>
-                <p>Professional, sleek look that enhances your brand</p>
+                <p>Professional, sleek look that enhances your brand with a modern, professional appearance</p>
               </div>
-              <div className="design-feature">
-                <div className="design-feature-header">
-                  <img src={`${process.env.PUBLIC_URL}/Icons/Durability.png`} alt="Durability" className="benefit-icon benefit-icon-white" />
-                  <h4>Durability</h4>
+              <div className="benefit-item">
+                <div className="benefit-header">
+                  <img src={`${process.env.PUBLIC_URL}/Icons/Durability.png`} alt="DurabilityEnergy Efficiency" className="benefit-icon" />
+                  <h5>Durability</h5>
                 </div>
                 <p>Long-lasting and weather-resistant materials</p>
               </div>
-              <div className="design-feature">
-                <div className="design-feature-header">
-                  <img src={`${process.env.PUBLIC_URL}/Icons/energy-efficiency.png`} alt="Energy Efficiency" className="benefit-icon benefit-icon-white" />
-                  <h4>Energy Efficiency</h4>
+              <div className="benefit-item">
+                <div className="benefit-header">
+                  <img src={`${process.env.PUBLIC_URL}/Icons/energy-efficiency.png`} alt="energy-efficiency" className="benefit-icon" />
+                  <h5>Energy Efficiency</h5>
                 </div>
-                <p>Thermally broken frames available for better insulation</p>
+                <p>Energy-efficient and thermally broken frames available</p>
               </div>
-              <div className="design-feature">
-                <div className="design-feature-header">
-                  <img src={`${process.env.PUBLIC_URL}/Icons/customdesign.png`} alt="Customisation" className="benefit-icon benefit-icon-white" />
-                  <h4>Customisation</h4>
+              <div className="benefit-item">
+                <div className="benefit-header">
+                  <img src={`${process.env.PUBLIC_URL}/Icons/customdesign.png`} alt="Customisation" className="benefit-icon" />
+                  <h5>Customisation</h5>
                 </div>
                 <p>Wide range of colours, finishes, and glazing options</p>
               </div>
-              <div className="design-feature">
-                <div className="design-feature-header">
-                  <img src={`${process.env.PUBLIC_URL}/Icons/security.png`} alt="Security & Automation" className="benefit-icon benefit-icon-white" />
-                  <h4>Security & Automation</h4>
+              <div className="benefit-item">
+                <div className="benefit-header">
+                  <img src={`${process.env.PUBLIC_URL}/Icons/security.png`} alt="security" className="benefit-icon" />
+                  <h5>Security & Automation</h5>
                 </div>
                 <p>Compatible with automatic doors and security systems</p>
               </div>
             </div>
-            <button className="secondary-button">Get a Shopfront Quote</button>
+            <button className="secondary-button">Learn More</button>
+          </div>
+          <div className="service-image">
+            <img src={`${process.env.PUBLIC_URL}/bg3.jpg`} alt="Alu Lady Example" className="service-img" />
           </div>
         </div>
       </section>
 
+     
+
       <section className="process-section">
         <div className="container">
-          <h2>Our Services</h2>
+          <h2 class="pink-text">Our Shopfront Services</h2>
           <div className="process-steps">
             <div className="step">
               <div className="step-number">1</div>
@@ -328,7 +449,7 @@ const App3 = () => {
       <section className="service-section conversion">
         <div className="container" id="services">
           <div className="service-content">
-            <h2>3. Steel to Aluminium Window Conversion Services</h2>
+            <h2>Steel to Aluminium Window Conversion Services</h2>
             <p><b>Transform Your Windows with Expert Steel to Aluminium Conversion</b></p>
             <p>At Alu Lady, we specialize in converting existing steel-framed windows into <b>DURABLE, STYLISH</b> aluminium windows. Our steel to aluminium window conversion services provide a <b>COST-EFFECTIVE</b> way to enhance your property's aesthetic appeal, improve <b>ENERGY EFFICIENCY</b>, and <b>INCREASE SECURITY</b>—all while <b>UTILIZING YOUR CURRENT WINDOW INFRASTRUCTURE</b>.</p>
             <h4>Why Convert Steel Windows to Aluminium?</h4>
@@ -375,11 +496,11 @@ const App3 = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Our Window Conversion Process */}
       <section className="process-section">
         <div className="container">
-          <h2>Our Window Conversion Process</h2>
+          <h2 class="pink-text">Our Window Conversion Process</h2>
           <div className="process-steps">
             <div className="process-row">
               <div className="step">
@@ -409,7 +530,7 @@ const App3 = () => {
                 </p>
               </div>
               <div className="step">
-                <div className="step-icon" style={{ background: '#f277c6', borderRadius: '50%' }}>
+                <div className="step-icon" style={{ background: '#ffffff', borderRadius: '50%' }}>
                   <img
                     src={`${process.env.PUBLIC_URL}/Icons/window.png`}
                     alt="Preparation & Removal"
@@ -424,7 +545,7 @@ const App3 = () => {
             </div>
             <div className="process-row">
               <div className="step">
-                <div className="step-icon" style={{ background: '#f277c6', borderRadius: '50%' }}>
+                <div className="step-icon" style={{ background: '#ffffff', borderRadius: '50%' }}>
                   <img
                     src={`${process.env.PUBLIC_URL}/Icons/steeltoaluminium.png`}
                     alt="Conversion & Installation"
@@ -437,7 +558,7 @@ const App3 = () => {
                 </p>
               </div>
               <div className="step">
-                <div className="step-icon" style={{ background: '#f277c6', borderRadius: '50%' }}>
+                <div className="step-icon" style={{ background: '#ffffff', borderRadius: '50%' }}>
                   <img
                     src={`${process.env.PUBLIC_URL}/Icons/Finaltouch.png`}
                     alt="Finishing Touches"
@@ -450,7 +571,7 @@ const App3 = () => {
                 </p>
               </div>
               <div className="step">
-                <div className="step-icon" style={{ background: '#f277c6', borderRadius: '50%' }}>
+                <div className="step-icon" style={{ background: '#ffffff', borderRadius: '50%' }}>
                   <img
                     src={`${process.env.PUBLIC_URL}/Icons/finalinpection.png`}
                     alt="Final Inspection"
@@ -479,129 +600,197 @@ const App3 = () => {
       <section className="service-section custom">
         <div className="container">
           <div className="service-content">
-            <h2>4. Frameless Shower Doors & Aluminium Balustrade Design & Installation</h2>
+            <h2>Frameless Shower Doors & Aluminium Balustrade Design & Installation</h2>
             <h3>Sleek. Modern. Expertly Installed.</h3>
             <p>At Alu Lady, we specialise in custom-designed frameless shower doors and aluminium balustrades — delivering clean lines, high-end finishes, and long-lasting functionality for both residential and commercial spaces.</p>
             <div className="frameless-section">
               <h3>Frameless Shower Doors</h3>
               <h4>Minimal Design, Maximum Impact</h4>
               <p>Our frameless glass shower doors bring elegance and simplicity to any bathroom. With no bulky frames to distract the eye, these doors create a spacious, open feel while highlighting your tilework and fixtures.</p>
+              
               <h5>Why Choose Frameless Glass Showers?</h5>
-              <ul>
+              <ol>
                 <li>Clean, modern aesthetic</li>
                 <li>Space-enhancing and light-maximising</li>
                 <li>Easy to clean & low maintenance</li>
                 <li>High-quality toughened safety glass</li>
                 <li>Custom sizing to fit any shower area</li>
-              </ul>
-              <h5>Our Services Include:</h5>
-              <ul>
-                <li>Bespoke design & layout consultation</li>
-                <li>Precision measuring & fabrication</li>
-                <li>Expert installation with durable hardware</li>
-                <li>Optional glass treatments for water & stain resistance</li>
-              </ul>
-              <p>Whether it's a walk-in, corner, or over-bath setup, we'll tailor a frameless solution that fits your space perfectly.</p>
+              </ol>
+              <button 
+                className="read-more-button" 
+                onClick={toggleMoreContent}
+                style={{
+                  backgroundColor: 'black',
+                  color: '#ff69b4',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  marginTop: '15px',
+                  marginBottom: '20px'
+                }}
+              >
+                {showMoreContent ? 'Read Less' : 'Read More'}
+              </button>
             </div>
-            <div className="balustrade-section">
-              <h3>Aluminium Balustrades</h3>
-              <h4>Strong. Stylish. Built to Last.</h4>
-              <p>Our aluminium balustrades combine safety with style, ideal for balconies, staircases, terraces, and commercial spaces. Lightweight yet extremely durable, aluminium resists rust and requires minimal upkeep — making it a smart choice for indoor and outdoor applications.</p>
-              <h5>Features & Benefits:</h5>
-              <ul>
-                <li>Weather-resistant and corrosion-free</li>
-                <li>Sleek powder-coated finishes in a range of colours</li>
-                <li>Modern or classic designs available</li>
-                <li>Custom configurations to suit any layout</li>
-                <li>Compliant with safety and building codes</li>
-              </ul>
-              <h5>Applications:</h5>
-              <ul>
-                <li>Residential balconies & decks</li>
-                <li>Staircases and mezzanines</li>
-                <li>Commercial buildings & complexes</li>
-                <li>Pool fencing and safety barriers</li>
-              </ul>
-              <h5>Our Full-Service Offering Includes:</h5>
-              <ul>
-                <li>Design consultation and compliance advice</li>
-                <li>High-quality fabrication</li>
-                <li>Fast, safe, and professional installation</li>
-              </ul>
-            </div>
-            <div className="why-choose-alu-lady">
-              <h4>Why Choose Alu Lady?</h4>
-              <ul>
-                <li>Fully qualified and experienced installers</li>
-                <li>Premium materials and components</li>
-                <li>Customised solutions for every space</li>
-                <li>Local expertise and friendly service</li>
-                <li>Transparent pricing and free quotes</li>
-              </ul>
-            </div>
+            {showMoreContent && (
+              <>
+                <div className="frameless-services">
+                  <h5>Our Services Include:</h5>
+                  <ul>
+                    <li>Bespoke design & layout consultation</li>
+                    <li>Precision measuring & fabrication</li>
+                    <li>Expert installation with durable hardware</li>
+                    <li>Optional glass treatments for water & stain resistance</li>
+                  </ul>
+                  <p>Whether it's a walk-in, corner, or over-bath setup, we'll tailor a frameless solution that fits your space perfectly.</p>
+                </div>
+                <div className="balustrade-section">
+                  <h3>Aluminium Balustrades</h3>
+                  <h4>Strong. Stylish. Built to Last.</h4>
+                  <p>Our aluminium balustrades combine safety with style, ideal for balconies, staircases, terraces, and commercial spaces. Lightweight yet extremely durable, aluminium resists rust and requires minimal upkeep — making it a smart choice for indoor and outdoor applications.</p>
+                  <h5>Features & Benefits:</h5>
+                  <ul>
+                    <li>Weather-resistant and corrosion-free</li>
+                    <li>Sleek powder-coated finishes in a range of colours</li>
+                    <li>Modern or classic designs available</li>
+                    <li>Custom configurations to suit any layout</li>
+                    <li>Compliant with safety and building codes</li>
+                  </ul>
+                  <h5>Applications:</h5>
+                  <ul>
+                    <li>Residential balconies & decks</li>
+                    <li>Staircases and mezzanines</li>
+                    <li>Commercial buildings & complexes</li>
+                    <li>Pool fencing and safety barriers</li>
+                  </ul>
+                  <h5>Our Full-Service Offering Includes:</h5>
+                  <ul>
+                    <li>Design consultation and compliance advice</li>
+                    <li>High-quality fabrication</li>
+                    <li>Fast, safe, and professional installation</li>
+                  </ul>
+                </div>
+                <div className= "tailored-business-types" style={{ textAlign: 'center' }}>
+                  <h4>Why Choose Alu Lady?</h4>
+                  <ul className="text-white">
+                    <li className="text-white">Fully qualified and experienced installers</li>
+                      <li className="text-white">Premium materials and components</li>
+                      <li className="text-white">Customised solutions for every space</li>
+                      <li className="text-white">Local expertise and friendly service</li>
+                      <li className="text-white">Transparent pricing and free quotes</li>
+                  </ul>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Maintenance Services section */}
-      <section className="service-section maintenance-services">
+      <section className="service-section maintenance">
         <div className="container">
-          <div className="service-content" style={{ textAlign: 'center', margin: '0 auto' }}>
-            <h2 style={{ textAlign: 'center' }}>5. Sliding and Stacking Aluminium Door Maintenance Services</h2>
-            <h3 style={{ textAlign: 'center' }}>Ensure Smooth Operation and Longevity with Expert Maintenance</h3>
-            <p>
-              At Alu Lady, we provide <b>COMPREHENSIVE MAINTENANCE SERVICES</b> for sliding and stacking aluminium doors, helping you keep your doors operating seamlessly and looking their best. Regular maintenance not only prolongs the life of your doors but also <b>ENHANCES THEIR SECURITY, FUNCTIONALITY, AND AESTHETIC APPEAL</b>.
-            </p>
-            <h4 style={{ textAlign: 'center' }}>Why Regular Maintenance for Aluminium Doors?</h4>
-            <div className="benefits-list" style={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
-              <div className="benefit-item" style={{ flex: '0 1 200px', textAlign: 'center' }}>
-                <div className="benefit-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <img src={`${process.env.PUBLIC_URL}/Icons/smooth-operation.png`} alt="Smooth Operation" className="benefit-icon" style={{ display: 'block', margin: '0 auto' }} />
-                  <h5 style={{ textAlign: 'center' }}>Smooth Operation</h5>
+          <div className="service-image">
+            <img src={`${process.env.PUBLIC_URL}/b2.jpg`} alt="Alu Lady Example" className="service-img" />
+          </div>
+          <div className="service-content">
+            <h2>Sliding and Stacking Aluminium Door Maintenance Services</h2>
+            <p>Ensure Smooth Operation and Longevity with Expert Maintenance</p>
+            <p>At Alu Lady, we provide <b>COMPREHENSIVE MAINTENANCE SERVICES</b> for sliding and stacking aluminium doors, helping you keep your doors operating 
+                seamlessly and looking their best. Regular maintenance not only prolongs the life of your doors but also <b>ENHANCES THEIR SECURITY, FUNCTIONALITY, 
+                AND AESTHETIC APPEAL</b>.</p>
+                <h4 >Why Regular Maintenance for Aluminium Doors?</h4>
+            <div className="installation-steps">
+              <div className="installation-step">
+                <div className="installation-header">
+                  <img src={`${process.env.PUBLIC_URL}/Icons/smooth-operation.png`} alt="smooth-operation" className="benefit-icon" />
+                  <h5>Smooth Operation</h5>
                 </div>
                 <p>Prevents sticking, jamming, or misalignment issues.</p>
               </div>
-              <div className="benefit-item" style={{ flex: '0 1 200px', textAlign: 'center' }}>
-                <div className="benefit-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <img src={`${process.env.PUBLIC_URL}/Icons/security.png`} alt="Enhanced Security" className="benefit-icon" style={{ display: 'block', margin: '0 auto' }} />
-                  <h5 style={{ textAlign: 'center' }}>Enhanced Security</h5>
+              <div className="installation-step">
+                <div className="installation-header">
+                  <img src={`${process.env.PUBLIC_URL}/Icons/security.png`} alt="Enhanced Security" className="benefit-icon" />
+                  <h5>Enhanced Security</h5>
                 </div>
                 <p>Keeps locks, hinges, and rollers in optimal condition.</p>
               </div>
-              <div className="benefit-item" style={{ flex: '0 1 200px', textAlign: 'center' }}>
-                <div className="benefit-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <img src={`${process.env.PUBLIC_URL}/Icons/Durability.png`} alt="Improved Durability" className="benefit-icon" style={{ display: 'block', margin: '0 auto' }} />
-                  <h5 style={{ textAlign: 'center' }}>Improved Durability</h5>
+              <div className="installation-step">
+                <div className="installation-header">
+                  <img src={`${process.env.PUBLIC_URL}/Icons/Durability.png`} alt="Durability" className="benefit-icon" />
+                  <h5>Improved Durability</h5>
                 </div>
                 <p>Protects against corrosion, dirt, and debris that can cause wear and tear.</p>
               </div>
-              <div className="benefit-item" style={{ flex: '0 1 200px', textAlign: 'center' }}>
-                <div className="benefit-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <img src={`${process.env.PUBLIC_URL}/Icons/CostEffective.png`} alt="Cost Savings" className="benefit-icon" style={{ display: 'block', margin: '0 auto' }} />
-                  <h5 style={{ textAlign: 'center' }}>Cost Savings</h5>
+              <div className="installation-step">
+                <div className="installation-header">
+                  <img src={`${process.env.PUBLIC_URL}/Icons/CostEffective.png`} alt="CostEffective" className="benefit-icon" />
+                  <h5>Cost Savings</h5>
                 </div>
                 <p>Avoid costly repairs or replacements through timely upkeep.</p>
               </div>
-              <div className="benefit-item" style={{ flex: '0 1 200px', textAlign: 'center' }}>
-                <div className="benefit-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <img src={`${process.env.PUBLIC_URL}/Icons/modernaesthetic.png`} alt="Aesthetic Preservation" className="benefit-icon" style={{ display: 'block', margin: '0 auto' }} />
-                  <h5 style={{ textAlign: 'center' }}>Aesthetic Preservation</h5>
+              <div className="installation-step">
+                <div className="installation-header">
+                  <img src={`${process.env.PUBLIC_URL}/Icons/modernaesthetic.png`} alt="aesthetic" className="benefit-icon" />
+                  <h5>Aesthetic Preservation</h5>
                 </div>
                 <p>Maintains the sleek appearance of your doors.</p>
               </div>
             </div>
-            <h4 class="pt-5" style={{ textAlign: 'center' }}>Our Maintenance Services Include</h4>
-            <ul style={{ display: 'inline-block', textAlign: 'left' }}>
-              <li><b>Inspection & Assessment:</b> We thoroughly examine your sliding and stacking aluminium doors to identify potential issues.</li>
-              <li><b>Cleaning & Lubrication:</b> We clean tracks, rollers, hinges, and locking mechanisms, and apply high-quality lubricants to ensure smooth movement.</li>
-              <li><b>Adjustment & Alignment:</b> We realign doors and hardware to prevent gaps, noise, and operational problems.</li>
-              <li><b>Seal & Weatherstripping Checks:</b> We inspect and replace seals to ensure proper insulation and weather protection.</li>
-              <li><b>Hardware Replacement:</b> We replace worn-out rollers, locks, handles, or any damaged components.</li>
-              <li><b>Preventive Maintenance Tips:</b> We provide guidance on best practices to keep your doors functioning perfectly between professional services.</li>
-            </ul>
+           
           </div>
         </div>
       </section>
+      <section className="process-section">
+        <div className="container">
+          <h3 class="pink-text">Our Maintenance Services Include</h3>
+          <div className="process-steps">
+            <div className="step">
+              <div className="step-number">1</div>
+              <h3><b>Inspection & Assessment:</b></h3>
+              <p> We thoroughly examine your sliding and stacking aluminium doors to identify potential issues.</p>
+            </div>
+            <div className="step">
+              <div className="step-number">2</div>
+              <h3>Cleaning & Lubrication:</h3>
+              <p> We clean tracks, rollers, hinges, and locking mechanisms, and apply high-quality lubricants to ensure smooth movement.</p>
+            </div>
+            <div className="step">
+              <div className="step-number">3</div>
+              <h3>Adjustment & Alignment:</h3>
+              <p> We realign doors and hardware to prevent gaps, noise, and operational problems.</p>
+            </div>
+            <div className="step">
+              <div className="step-number">4</div>
+              <h3>Seal & Weatherstripping Checks:</h3>
+              <p>We inspect and replace seals to ensure proper insulation and weather protection.</p>
+            </div>
+            <div className="step">
+              <div className="step-number">5</div>
+              <h3>Hardware Replacement:</h3>
+              <p>We replace worn-out rollers, locks, handles, or any damaged components.</p>
+            </div>
+            <div className="step">
+              <div className="step-number">6</div>
+              <h3>Preventive Maintenance Tips:</h3>
+              <p>We provide guidance on best practices to keep your doors functioning perfectly between professional services.</p>
+            </div>
+          </div><div className="tailored-business-types">
+            <h4>Why Choose Alu Lady?</h4>
+            <ul>
+              <li>Experienced technicians specializing in aluminium door maintenance</li>
+              <li>Prompt, reliable, and professional service</li>
+              <li>Use of high-quality parts and materials</li>
+              <li>Tailored maintenance plans to suit your specific doors and usag</li>
+            </ul>
+          </div>
+
+        </div>
+        <button className="secondary-button" onClick={() => toggleModal('maintenance')}>Schedule Your Maintenance Today</button>
+      </section>
+
+
 
       {/* Contact Section */}
       <section className="contact-section">
