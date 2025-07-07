@@ -744,12 +744,12 @@ margin-bottom: 5px;
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(255, 0, 0, 0.671);
+  background: rgba(223, 138, 208, 0);
   border: none;
   height: 60px;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #777;
+  color: #fa1cca;
 }
 
 .quote-form {

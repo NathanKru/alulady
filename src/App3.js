@@ -101,7 +101,9 @@ const App3 = () => {
       <div className="mini-top-bar">
         <div className="container">
           <div className="social-icons">
-            <a href="#" aria-label="Facebook"><FaFacebook /></a>
+            <a href="https://www.facebook.com/share/1EdHs3P6SX/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <FaFacebook />
+            </a>
             <a href="https://wa.me/27710249222" target="_blank" rel="noopener noreferrer" aria-label="Whatsapp"><FaWhatsapp /></a>
           </div>
           <button className="quote-button" onClick={() => toggleModal('quote')}>
@@ -149,7 +151,7 @@ const App3 = () => {
               <input type="tel" name="phone" placeholder="Phone Number" required value={formData.phone} onChange={handleInputChange} />
               <select name="service" required value={formData.service} onChange={handleInputChange}>
                 <option value="">Select Service</option>
-                <option value="conversion">Custom and Standard Aluminium Window & door designs </option>
+                <option value="conversion">Custom and Standard Aluminium Window & door Designs </option>
                 <option value="maintenance">Aluminium Shopfront Design & Installation Services </option>
                 <option value="custom">Steel to Aluminium Window Conversion Services</option>
                 <option value="custom">Frameless Shower Doors & Aluminium Balustrade Design & Installation</option>
@@ -182,7 +184,7 @@ const App3 = () => {
           <h2>About Alu Lady</h2>
           <p>Alu Lady is committed to empowering women and elevating home aesthetics. We specialize in high-quality aluminum
              products and offer comprehensive solutions
-            including doors, windows, and commercial shopfronts. We are proudly AAMSA-registered, ensuring our work meets the 
+            including doors, windows, and commercial shopfronts. We are proudly AAAMSA-registered, ensuring our work meets the 
             highest industry standards.</p>
           
           {/* Certifications and Memberships */}
@@ -210,7 +212,7 @@ const App3 = () => {
               <div className="icon-circle">
                 <FaDoorOpen />
               </div>
-              <h3>Custom and Standard Aluminium Window and Door designs</h3>
+              <h3>Custom and Standard Aluminium Window and Door Designs</h3>
               <p>Expertly crafted aluminium windows and doors, both custom and standard, to suit your needs.</p>
             </div>
             <div className="feature">
@@ -227,14 +229,14 @@ const App3 = () => {
                 <FaStar />
               </div>
               <h3>Steel to Aluminium Window Conversion Services</h3>
-              <p>Elegant frameless shower doors and modern aluminium balustrades, designed and installed to perfection.</p>
+              <p>Keep your sliding and stacking doors in perfect condition with our expert maintenance services.</p>
             </div>
             <div className="feature">
               <div className="icon-circle">
                 <FaTools />
               </div>
               <h3>Frameless Shower Doors & Aluminium Balustrade Design & Installation</h3>
-              <p>Keep your sliding and stacking doors in perfect condition with our expert maintenance services.</p>
+              <p>Elegant frameless shower doors and modern aluminium balustrades, designed and installed to perfection.</p>
             </div>
             <div className="feature">
               <div className="icon-circle">
@@ -251,7 +253,7 @@ const App3 = () => {
       <section className="service-section conversion">
         <div className="container" id="services">
           <div className="service-content">
-            <h2>Custom and Standard Aluminium Window and Door designs</h2>
+            <h2>Custom and Standard Aluminium Window and Door Designs</h2>
             <p> At Alu Lady, we specialize in creating bespoke aluminium window and door designs that
               perfectly complement your home or business. Our custom designs are not only
               AESTHETICALLY PLEASING but also offer superior DURABILITY AND ENERGY
@@ -290,7 +292,7 @@ const App3 = () => {
                 <p>With a wide range of finishes and colours available, aluminium windows and doors can be customized to match any architectural style.</p>
               </div>
             </div>
-            <button className="secondary-button">Learn More</button>
+            <button className="secondary-button" onClick={() => toggleModal('maintenance')}>Request a Quote</button>
           </div>
           <div className="service-image">
             <img src={`${process.env.PUBLIC_URL}/bg1.jpg`} alt="Alu Lady Example" className="service-img" />
@@ -344,6 +346,7 @@ const App3 = () => {
                 <p>We provide comprehensive aftercare services to keep your windows and doors in top condition.</p>
               </div>
             </div>
+            <button className="secondary-button" onClick={() => toggleModal('maintenance')}>Get a Quote</button>
           </div>
         </div>
       </section>
@@ -398,7 +401,7 @@ const App3 = () => {
                 <p>Compatible with automatic doors and security systems</p>
               </div>
             </div>
-            <button className="secondary-button">Learn More</button>
+            <button className="secondary-button" onClick={() => toggleModal('maintenance')}>Get a Quote</button>
           </div>
           <div className="service-image">
             <img src={`${process.env.PUBLIC_URL}/bg3.jpg`} alt="Alu Lady Example" className="service-img" />
@@ -791,7 +794,7 @@ const App3 = () => {
       </section>
 
 
-
+<hr></hr>
       {/* Contact Section */}
       <section className="contact-section">
         <div className="container" id="contact">
