@@ -15,11 +15,11 @@ const App3 = () => {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
+  const [submitStatus, setSubmitStatus] = useState(null); // 'succ`ess', 'error', or null
 
   // Initialize EmailJS
   useEffect(() => {
-    emailjs.init("YOUR_EMAILJS_USER_ID"); // Replace with your actual EmailJS user ID
+    emailjs.init("4kmo1dvAAHn33i2bi"); // Replace with your actual EmailJS user ID
   }, []);
 
   const toggleModal = (type = 'quote') => {
@@ -67,8 +67,8 @@ const App3 = () => {
       };
 
       await emailjs.send(
-        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+        'service_ip14jzk', // Replace with your EmailJS service ID
+        'template_m6kmrht', // Replace with your EmailJS template ID
         templateParams
       );
 
@@ -151,12 +151,12 @@ const App3 = () => {
               <input type="tel" name="phone" placeholder="Phone Number" required value={formData.phone} onChange={handleInputChange} />
               <select name="service" required value={formData.service} onChange={handleInputChange}>
                 <option value="">Select Service</option>
-                <option value="conversion">Custom and Standard Aluminium Window & door Designs </option>
-                <option value="maintenance">Aluminium Shopfront Design & Installation Services </option>
-                <option value="custom">Steel to Aluminium Window Conversion Services</option>
-                <option value="custom">Frameless Shower Doors & Aluminium Balustrade Design & Installation</option>
-                <option value="custom">Sliding and Stacking Aluminium Door Maintenance Services</option>
-                <option value="custom">Maintenance Services</option>
+                <option value="Custom and Standard Aluminium Window & door Designs">Custom and Standard Aluminium Window & door Designs </option>
+                <option value="Aluminium Shopfront Design & Installation Services">Aluminium Shopfront Design & Installation Services </option>
+                <option value="Steel to Aluminium Window Conversion Services">Steel to Aluminium Window Conversion Services</option>
+                <option value="Frameless Shower Doors & Aluminium Balustrade Design & Installation">Frameless Shower Doors & Aluminium Balustrade Design & Installation</option>
+                <option value="Sliding and Stacking Aluminium Door Maintenance Services">Sliding and Stacking Aluminium Door Maintenance Services</option>
+                <option value="Maintenance Services">Maintenance Services</option>
               </select>
               <textarea name="message" placeholder="Project Details" required value={formData.message} onChange={handleInputChange}></textarea>
               <button type="submit" className="submit-button" disabled={isSubmitting}>
@@ -229,7 +229,8 @@ const App3 = () => {
                 <FaStar />
               </div>
               <h3>Steel to Aluminium Window Conversion Services</h3>
-              <p>Keep your sliding and stacking doors in perfect condition with our expert maintenance services.</p>
+              <p>Seamless and professional installation for all aluminium products, ensuring quality and durability.</p>
+              
             </div>
             <div className="feature">
               <div className="icon-circle">
@@ -243,7 +244,7 @@ const App3 = () => {
                 <FaCog />
               </div>
               <h3>Sliding and Stacking Aluminium Door Maintenance Services</h3>
-              <p>Seamless and professional installation for all aluminium products, ensuring quality and durability.</p>
+              <p>Keep your sliding and stacking doors in perfect condition with our expert maintenance services.</p>
             </div>
           </div>
         </div>
@@ -292,7 +293,7 @@ const App3 = () => {
                 <p>With a wide range of finishes and colours available, aluminium windows and doors can be customized to match any architectural style.</p>
               </div>
             </div>
-            <button className="secondary-button" onClick={() => toggleModal('maintenance')}>Request a Quote</button>
+            <button className="secondary-button" onClick={() => toggleModal('quote')}>Request a Quote</button>
           </div>
           <div className="service-image">
             <img src={`${process.env.PUBLIC_URL}/bg1.jpg`} alt="Alu Lady Example" className="service-img" />
@@ -346,7 +347,7 @@ const App3 = () => {
                 <p>We provide comprehensive aftercare services to keep your windows and doors in top condition.</p>
               </div>
             </div>
-            <button className="secondary-button" onClick={() => toggleModal('maintenance')}>Get a Quote</button>
+            <button className="secondary-button" onClick={() => toggleModal('quote')}>Get a Quote</button>
           </div>
         </div>
       </section>
@@ -401,7 +402,7 @@ const App3 = () => {
                 <p>Compatible with automatic doors and security systems</p>
               </div>
             </div>
-            <button className="secondary-button" onClick={() => toggleModal('maintenance')}>Get a Quote</button>
+            <button className="secondary-button" onClick={() => toggleModal('quote')}>Get a Quote</button>
           </div>
           <div className="service-image">
             <img src={`${process.env.PUBLIC_URL}/bg3.jpg`} alt="Alu Lady Example" className="service-img" />
