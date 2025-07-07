@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/alulady/static/css/main.dddd41c0.css",
-    "main.js": "/alulady/static/js/main.d097e7fa.js",
+    "main.css": "/alulady/static/css/main.8fbf411e.css",
+    "main.js": "/alulady/static/js/main.8affd91b.js",
     "static/js/488.ebeb0f3b.chunk.js": "/alulady/static/js/488.ebeb0f3b.chunk.js",
     "static/media/b2.jpg": "/alulady/static/media/b2.06d01694707daae89ed5.jpg",
     "index.html": "/alulady/index.html",
-    "main.dddd41c0.css.map": "/alulady/static/css/main.dddd41c0.css.map",
-    "main.d097e7fa.js.map": "/alulady/static/js/main.d097e7fa.js.map",
+    "main.8fbf411e.css.map": "/alulady/static/css/main.8fbf411e.css.map",
+    "main.8affd91b.js.map": "/alulady/static/js/main.8affd91b.js.map",
     "488.ebeb0f3b.chunk.js.map": "/alulady/static/js/488.ebeb0f3b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.dddd41c0.css",
-    "static/js/main.d097e7fa.js"
+    "static/css/main.8fbf411e.css",
+    "static/js/main.8affd91b.js"
   ]
 }
