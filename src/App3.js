@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './App3.css';
 import { FaExchangeAlt, FaDoorOpen, FaPalette, FaTools, FaPhone, FaMapMarkerAlt, FaEnvelope, FaFacebook, FaWhatsapp, FaTimes, FaShieldAlt, FaLeaf, FaCog, FaStar, FaDollarSign } from 'react-icons/fa';
 import emailjs from 'emailjs-com';
+import Gallery from "./gallery";
+import photos from "./photos";
 
 const App3 = () => {
   const [showModal, setShowModal] = useState(false);
@@ -97,6 +99,7 @@ const App3 = () => {
   };
   return (
     <div className="app">
+      
       {/* Mini Top Bar */}
       <div className="mini-top-bar">
         <div className="container">
@@ -115,19 +118,21 @@ const App3 = () => {
       {/* Main Navigation */}
       <nav className="main-nav">
         <div className="container">
-          <div className="logo-placeholder">
-            <img
-              src={`${process.env.PUBLIC_URL}/logo.png`}
-              alt="Alu Lady "
-              className="logo-image alu-lady-logo"
-            />
-          </div>
-          <div className="logo-placeholder">
-            <img
-              src={`${process.env.PUBLIC_URL}/AAAMSALogo-small.png`}
-              alt="AAAMSA "
-              className="logo-image aaamsa-logo"
-            />
+          <div className="logo-row">
+            <div className="logo-placeholder">
+              <img
+                src={`${process.env.PUBLIC_URL}/logo.png`}
+                alt="Alu Lady "
+                className="logo-image alu-lady-logo"
+              />
+            </div>
+            <div className="logo-placeholder">
+              <img
+                src={`${process.env.PUBLIC_URL}/AAAMSALogo-small.png`}
+                alt="AAAMSA "
+                className="logo-image aaamsa-logo"
+              />
+            </div>
           </div>
           <ul className="nav-links">
             <li><a href="#home">Home</a></li>
@@ -169,7 +174,19 @@ const App3 = () => {
         </div>
       )}
       {/* Hero Section */}
-      <header className="hero" id="home">
+      <header className="hero" id="home"
+      style={{ 
+        background: "${process.env.PUBLIC_URL}/heroimg.png') no-repeat center center / cover",
+        backgroundColor: "rgba(0, 0, 0, 0.521)",
+        backgroundBlendMode: "lighten",
+        height: "100vh",
+        minHeight: "600px",
+        display: "flex",
+        alignItems: "center",
+        textAlign: "center",
+        position: "relative",
+        marginBottom: "5px",
+      }}>
         <div className="hero-content">
           <h1>Elevate Your Space with Aluminium Elegance</h1>
           <p class="white-text">Where innovation meets elegance in aluminium solutions</p>
@@ -295,8 +312,11 @@ const App3 = () => {
             </div>
             <button className="secondary-button" onClick={() => toggleModal('quote')}>Request a Quote</button>
           </div>
-          <div className="service-image">
-            <img src={`${process.env.PUBLIC_URL}/bg1.jpg`} alt="Alu Lady Example" className="service-img" />
+          <div className="service-video">
+            <video className="benefit-icont" style={{ objectFit: 'cover' }} autoPlay muted loop playsInline >
+              <source src={`${process.env.PUBLIC_URL}/Icons/alulady_project.mp4`} type="video/mp4" />Your browser does not support the video tag.
+            </video>
+            {/* <img src={`${process.env.PUBLIC_URL}/bg1.jpg`} alt="Alu Lady Example" className="service-img" /> */}
           </div>
         </div>
       </section>
@@ -409,9 +429,7 @@ const App3 = () => {
           </div>
         </div>
       </section>
-
-     
-
+<Gallery photos={photos} />
       <section className="process-section">
         <div className="container">
           <h2 class="pink-text">Our Shopfront Services</h2>
