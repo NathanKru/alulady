@@ -312,20 +312,25 @@ const App3 = () => {
             </div>
             <button className="secondary-button" onClick={() => toggleModal('quote')}>Request a Quote</button>
           </div>
-          <div className="service-video">
-            <video className="benefit-icont" style={{ objectFit: 'cover' }} autoPlay muted loop playsInline >
+          <div className="service-image">
+            {/* <video className="benefit-icont" style={{ objectFit: 'cover' }} autoPlay muted loop playsInline >
               <source src={`${process.env.PUBLIC_URL}/Icons/alulady_project.mp4`} type="video/mp4" />Your browser does not support the video tag.
-            </video>
-            {/* <img src={`${process.env.PUBLIC_URL}/bg1.jpg`} alt="Alu Lady Example" className="service-img" /> */}
+            </video> */}
+            <img src={`${process.env.PUBLIC_URL}/custom_steel_to_aluminium.jpg`} alt="Alu Lady Example" className="service-img" />
           </div>
         </div>
       </section>
 
       <section className="service-section maintenance">
         <div className="container">
-          <div className="service-image">
-            <img src={`${process.env.PUBLIC_URL}/b2.jpg`} alt="Alu Lady Example" className="service-img" />
+          <div className="service-video">
+            <video className="benefit-icont" style={{ objectFit: 'cover' }} autoPlay muted loop playsInline >
+              <source src={`${process.env.PUBLIC_URL}/Icons/alulady_project.mp4`} type="video/mp4" />Your browser does not support the video tag.
+            </video>
           </div>
+          {/* <div className="service-image">
+            <img src={`${process.env.PUBLIC_URL}/b2.jpg`} alt="Alu Lady Example" className="service-img" />
+          </div> */}
           <div className="service-content">
             <h2>Professional Installation Services</h2>
             <p>At Alu Lady, we don't just design your windows and doors – we also offer professional installation services to <b>ENSURE A PERFECT FIT AND FINISH</b>. Our experienced installation team is dedicated to providing a <b>HASSLE-FREE EXPERIENCE</b>, from start to finish.</p>
@@ -714,7 +719,7 @@ const App3 = () => {
       <section className="service-section maintenance">
         <div className="container">
           <div className="service-image">
-            <img src={`${process.env.PUBLIC_URL}/b2.jpg`} alt="Alu Lady Example" className="service-img" />
+            <img src={`${process.env.PUBLIC_URL}/aluminium_stacking_door.jpg`} alt="Alu Lady Example" className="service-img" />
           </div>
           <div className="service-content">
             <h2>Sliding and Stacking Aluminium Door Maintenance Services</h2>
